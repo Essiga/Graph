@@ -1,5 +1,9 @@
-public abstract class AdjStruct<T> {
-    public void create() {
+import org.javatuples.Triplet;
 
-    }
+import java.util.List;
+
+public abstract class AdjStruct {
+
+
+    public abstract List<Vertex> getNeighbors(Vertex vertex);
 }
