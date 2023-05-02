@@ -53,6 +53,8 @@ public class Graph {
     public List<Vertex> getNeighbors(Vertex vertex){
         return adjStruct.getNeighbors(vertex);
     }
+    public void print() {adjStruct.print();}
+    public void traverse(TraversalType traversalType){adjStruct.traverse(traversalType);}
 }
 
 

@@ -4,4 +4,8 @@ public class Edge {
     public Edge(float weight) {
         this.weight = weight;
     }
+
+    public float getWeight() {
+        return weight;
+    }
 }

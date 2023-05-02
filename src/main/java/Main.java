@@ -5,14 +5,15 @@ public class Main {
     public static void main(String[] args){
         Graph graph = Graph.create(new File("src/matrix.txt"));
 
-        Vertex v = new Vertex("C");
-
+        Vertex v = new Vertex("A");
+        graph.print();
         List<Vertex> neighbors= graph.getNeighbors(v);
 
         for (Vertex neighbor: neighbors) {
             System.out.println(neighbor.getName());
         }
-
-
+        graph.traverse(TraversalType.RECURSIVE);
+        graph.traverse(TraversalType.DEPTH_FIRST);
+        graph.traverse(TraversalType.BREADTH_FIRST);
     }
 }

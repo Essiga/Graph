@@ -23,4 +23,11 @@ public class Vertex {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    @Override
+    public String toString() {
+        return "Vertex{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
