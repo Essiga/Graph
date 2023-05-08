@@ -50,6 +50,7 @@ public class Graph {
 
     }
 
+    public void findEulerPath(Vertex v){adjStruct.findEulerPath(v);}
     public List<Vertex> getNeighbors(Vertex vertex){
         return adjStruct.getNeighbors(vertex);
     }
