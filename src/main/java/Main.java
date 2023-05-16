@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args){
-        Graph graph = Graph.create(new File("src/nikolaushouse.txt"));
+        Graph graph = Graph.create(new File("src/matrix.txt"));
 
         Vertex v = new Vertex("A");
         graph.print();
@@ -15,7 +15,8 @@ public class Main {
 //        graph.traverse(TraversalType.RECURSIVE);
 //        graph.traverse(TraversalType.DEPTH_FIRST);
 //        graph.traverse(TraversalType.BREADTH_FIRST);
-        graph.findEulerPath(v);
+        //graph.findEulerPath(v);
+        graph.kruskal();
     }
 
 }

@@ -27,6 +27,63 @@ public class AdjMatrix extends AdjStruct {
     }
 
 
+    public LinkedList<Edge> getAllEdges(){
+        LinkedList<Edge> results = new LinkedList<>();
+
+        for (List<Edge> edgeList:edges) {
+            for (Edge edge:edgeList) {
+                if(edge != null){
+                    results.add(edge);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public void kruskal(){
+        LinkedList<Edge> edges = getAllEdges();
+        edges.sort(Comparator.comparing(Edge::getWeight));
+        List<Edge> minimalEdges = new LinkedList<>();
+       // Map<Vertex, Set<Vertex>> vertexSets = new HashMap<>();
+        List<Set<Vertex>> vertexList = new LinkedList<>();
+        for (Vertex vertex:vertices) {
+            Set<Vertex> set = new HashSet<>();
+            set.add(vertex);
+            vertexList.add(set);
+        }
+        while (!edges.isEmpty()) {
+            Edge edge = edges.poll();
+            if (!minimalEdges.contains(edge)){
+                boolean alreadyPresent = false;
+                for (Set<Vertex> vertexSet:vertexList) {
+                    if(vertexSet.contains(edge.getTo()) && vertexSet.contains(edge.getFrom())){
+                       alreadyPresent = true;
+                    }
+                }
+
+                if(!alreadyPresent){
+                    minimalEdges.add(edge);
+                    Set<Vertex> fromSet = new HashSet<>();
+                    Set<Vertex> toSet = new HashSet<>();
+                    for (Set<Vertex> vertexSet:vertexList) {
+                        if(vertexSet.contains(edge.getFrom())){
+                            fromSet = vertexSet;
+                        }
+                        if(vertexSet.contains(edge.getTo())){
+                            toSet = vertexSet;
+                        }
+                    }
+                    vertexList.remove(toSet);
+                    vertexList.remove(fromSet);
+                    fromSet.addAll(toSet);
+                    vertexList.add(fromSet);
+                }
+            }
+        }
+        System.out.println(minimalEdges);
+    }
+
     @Override
     public List<Vertex> getNeighbors(Vertex vertex){
         List<Vertex> neighbors = new LinkedList<Vertex>();
@@ -69,6 +126,82 @@ public class AdjMatrix extends AdjStruct {
         System.out.println("**+");
     }
 
+    public void dijkstra(Vertex currentVertex){
+        HashMap<Vertex, Float> vertexValues = new HashMap<>();
+        //Map Vertex Vorgängerknoten beim eintragen vorgängerknoten miteintragen
+        HashMap<Vertex, Vertex> parentVertex = new HashMap<>();
+        List<Vertex> markedVertices = new LinkedList<>();
+        for (Vertex v: vertices) {
+            vertexValues.put(v, Float.MAX_VALUE);
+        }
+        vertexValues.put(currentVertex, 0f);
+
+        while(markedVertices.size() < vertices.size()){
+
+            Map.Entry<Vertex, Float> minimalEntry = null;
+            for (Map.Entry<Vertex, Float> entry:vertexValues.entrySet()) {
+                if(!markedVertices.contains(entry.getKey())){
+                    if(minimalEntry == null){
+                        minimalEntry = entry;
+                    }
+                    if(minimalEntry.getValue() > entry.getValue()){
+                        minimalEntry = entry;
+                    }
+                }
+            }
+            markedVertices.add(minimalEntry.getKey());
+
+            List<Edge> edges = getEdges(currentVertex);
+            for (Edge edge:edges) {
+                if(edge != null && !markedVertices.contains(edge.getTo())){
+                    if(vertexValues.get(currentVertex) + edge.getWeight() < vertexValues.get(edge.getTo())){
+                        vertexValues.put(edge.getTo(), vertexValues.get(currentVertex) + edge.getWeight());
+                        parentVertex.put(currentVertex, edge.getTo());
+                    }
+                }
+            }
+        }
+        System.out.println(parentVertex);
+    }
+
+//    //niedrigste kante finden und danach einen der knoten auswählen und dijkstra machen
+//    public void prim(Vertex currentVertex){
+//        HashMap<Edge, Float> edgeValues = new HashMap<>();
+//        HashMap<Vertex, Vertex> parentVertex = new HashMap<>();
+//        List<Vertex> markedVertices = new LinkedList<>();
+//        for (Edge e: edges) {
+//            edgeValues.put(e, Float.MAX_VALUE);
+//        }
+//        edgeValues.put(currentVertex, 0f);
+//
+//        while(markedVertices.size() < vertices.size()){
+//
+//            Map.Entry<Vertex, Float> minimalEntry = null;
+//            for (Map.Entry<Vertex, Float> entry:edgeValues.entrySet()) {
+//                if(!markedVertices.contains(entry.getKey())){
+//                    if(minimalEntry == null){
+//                        minimalEntry = entry;
+//                    }
+//                    if(minimalEntry.getValue() > entry.getValue()){
+//                        minimalEntry = entry;
+//                    }
+//                }
+//            }
+//            markedVertices.add(minimalEntry.getKey());
+//
+//            List<Edge> edges = getEdges(currentVertex);
+//            for (Edge edge:edges) {
+//                if(edge != null && !markedVertices.contains(edge.getTo())){
+//                    if(edge.getWeight() < edgeValues.get(edge.getTo())){
+//                        parentVertex.put(currentVertex, edge.getTo());
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println(parentVertex);
+//    }
+
+
     @Override
     public void traverse(TraversalType traversalType) {
         closeList = new LinkedList<>();
@@ -109,30 +242,14 @@ public class AdjMatrix extends AdjStruct {
 
         findEulerPathRecursive(v, visitedEdges);
 
-//        Stack<Vertex> openList = new Stack<>();
-//        closeList = new LinkedList<>();
-//        List<Vertex> ns = getNeighbors(v);
-//        for (Vertex n : ns){
-//            openList.add(n);
-//            while(!openList.isEmpty()){
-//                Vertex currentVertex = openList.pop();
-//                if(!closeList.contains(currentVertex)){
-//                    closeList.add(currentVertex);
-//                    List<Vertex> neighbors = getNeighbors(currentVertex);
-//                    for (Vertex neighbor:neighbors) {
-//                        openList.push(neighbor);
-//                    }
-//                }
-//            }
-//            if(closeList.get(closeList.size() -1).equals(v)){
-//                System.out.println(closeList);
-//            }
-//        }
+    }
 
+    private int getEdgeCount(){
+        return edgeCount/2;
     }
 
     private void findEulerPathRecursive(Vertex currentVertex, List<Edge> visitedEdges){
-        if(visitedEdges.size() == (edgeCount/2)){
+        if(visitedEdges.size() == (getEdgeCount())){
             System.out.println(visitedEdges);
             System.out.println("end");
             return;
@@ -141,9 +258,9 @@ public class AdjMatrix extends AdjStruct {
         for (Edge edge: getEdges(currentVertex)) {
             if (!visitedEdges.contains(edge) && edge != null) {
                 visitedEdges.add(edge);
-                currentVertex = edge.getFrom().equals(currentVertex) ? edge.getTo() : edge.getFrom();
-                findEulerPathRecursive(currentVertex, visitedEdges);
-                currentVertex = edge.getFrom().equals(currentVertex) ? edge.getTo() : edge.getFrom();
+                //currentVertex = edge.getFrom().equals(currentVertex) ? edge.getTo() : edge.getFrom();
+                findEulerPathRecursive(edge.getTo(), visitedEdges);
+                //currentVertex = edge.getFrom().equals(currentVertex) ? edge.getTo() : edge.getFrom();
                 visitedEdges.remove(edge);
             }
         }

@@ -1,9 +1,9 @@
 import java.util.Objects;
 
 public class Edge {
-    private float weight;
-    private Vertex from;
-    private Vertex to;
+    private final float weight;
+    private final Vertex from;
+    private final Vertex to;
 
     public Edge(float weight, Vertex from, Vertex to) {
         this.weight = weight;

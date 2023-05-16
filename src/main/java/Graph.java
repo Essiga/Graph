@@ -56,6 +56,11 @@ public class Graph {
     }
     public void print() {adjStruct.print();}
     public void traverse(TraversalType traversalType){adjStruct.traverse(traversalType);}
+    public void dijkstra(Vertex startVertex){adjStruct.dijkstra(startVertex);}
+
+    public void kruskal() {
+        adjStruct.kruskal();
+    }
 }
 
 
