@@ -126,7 +126,7 @@ public class AdjMatrix extends AdjStruct {
         System.out.println("**+");
     }
 
-    public void dijkstra(Vertex currentVertex){
+    public void dijkstra2(Vertex currentVertex){
         HashMap<Vertex, Float> vertexValues = new HashMap<>();
         //Map Vertex Vorgängerknoten beim eintragen vorgängerknoten miteintragen
         HashMap<Vertex, Vertex> parentVertex = new HashMap<>();
@@ -150,18 +150,60 @@ public class AdjMatrix extends AdjStruct {
                 }
             }
             markedVertices.add(minimalEntry.getKey());
+            currentVertex = minimalEntry.getKey();
 
             List<Edge> edges = getEdges(currentVertex);
             for (Edge edge:edges) {
                 if(edge != null && !markedVertices.contains(edge.getTo())){
                     if(vertexValues.get(currentVertex) + edge.getWeight() < vertexValues.get(edge.getTo())){
                         vertexValues.put(edge.getTo(), vertexValues.get(currentVertex) + edge.getWeight());
-                        parentVertex.put(currentVertex, edge.getTo());
+                        parentVertex.put(edge.getTo(), currentVertex);
                     }
                 }
             }
         }
         System.out.println(parentVertex);
+    }
+
+    public void dijkstra(Vertex startVertex){
+        HashMap<Vertex, Float> vertexValues = new HashMap<>();
+        HashMap<Vertex, Vertex> parentChild = new HashMap<>();
+
+        for(Vertex v : vertices){
+            vertexValues.put(v, Float.MAX_VALUE);
+        }
+        vertexValues.put(startVertex, 0f);
+        List<Vertex> unvisitedVertices = new LinkedList<>(vertices);
+        while(unvisitedVertices.size() > 0){
+            Vertex minimalVertex = getMinimalVertex(vertexValues, unvisitedVertices);
+            unvisitedVertices.remove(minimalVertex);
+            Vertex currentVertex = minimalVertex;
+
+            List<Edge> edges = getEdges(currentVertex);
+
+            for (Edge edge:edges){
+                if(edge != null && unvisitedVertices.contains(edge.getTo())){
+                    if(vertexValues.get(currentVertex) + edge.getWeight() < vertexValues.get(edge.getTo())){
+                        vertexValues.put(edge.getTo(), vertexValues.get(currentVertex) + edge.getWeight());
+                        parentChild.put(edge.getTo(), currentVertex);
+                    }
+                }
+            }
+
+        }
+        System.out.println(parentChild);
+    }
+
+    public Vertex getMinimalVertex(HashMap<Vertex, Float> vertexValues, List<Vertex> unvisitedVertices){
+        Float minValue = Float.MAX_VALUE;
+        Vertex result = null;
+        for(Map.Entry<Vertex, Float> e : vertexValues.entrySet()){
+            if(unvisitedVertices.contains(e.getKey()) && e.getValue() <= minValue){
+                minValue = e.getValue();
+                result = e.getKey();
+            }
+        }
+        return result;
     }
 
 //    //niedrigste kante finden und danach einen der knoten auswählen und dijkstra machen
