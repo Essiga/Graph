@@ -230,36 +230,66 @@ public class AdjMatrix extends AdjStruct {
 //    }
 
     public void prim(Vertex startVertex){
-        PriorityQueue<Edge> openList = new PriorityQueue<>(new EdgeComparator());
-        List<Edge> visitedEdges = new LinkedList<>();
-        List<Vertex> visitedVertices = new LinkedList<>();
-        Vertex currentVertex = startVertex;
-        visitedVertices.add(currentVertex);
-        List<Edge> edges = getEdges(currentVertex);
-        for(Edge edge: edges){
-            if(edge != null){
-                openList.add(edge);
-            }
-        }
+        HashMap<Vertex, Float> vertexValues = new HashMap<>();
+        HashMap<Vertex, Vertex> parentChild = new HashMap<>();
 
-        while(visitedVertices.size() < vertices.size()){
-            edges = getEdges(currentVertex);
-            for(Edge edge: edges){
-                if(edge != null && !visitedEdges.contains(edge)){
-                    openList.add(edge);
+        for(Vertex v : vertices){
+            vertexValues.put(v, Float.MAX_VALUE);
+        }
+        vertexValues.put(startVertex, 0f);
+        List<Vertex> unvisitedVertices = new LinkedList<>(vertices);
+        while(unvisitedVertices.size() > 0){
+            Vertex minimalVertex = getMinimalVertex(vertexValues, unvisitedVertices);
+            unvisitedVertices.remove(minimalVertex);
+            Vertex currentVertex = minimalVertex;
+
+            List<Edge> edges = getEdges(currentVertex);
+
+            for (Edge edge:edges){
+                if(edge != null && unvisitedVertices.contains(edge.getTo())){
+                    if(edge.getWeight() < vertexValues.get(edge.getTo())){ // <--- die zeile isch verändert worden
+                        vertexValues.put(edge.getTo(), vertexValues.get(currentVertex) + edge.getWeight());
+                        parentChild.put(edge.getTo(), currentVertex);
+                    }
                 }
             }
-            Edge edge = openList.poll();
-            if(!visitedEdges.contains(edge)){
-                visitedEdges.add(edge);
-                currentVertex = edge.getTo();
-                visitedVertices.add(currentVertex);
-            }
+
         }
-
-        System.out.println(visitedEdges);
-
+        System.out.println(parentChild);
     }
+
+    //self implemented without looking at dijkstra
+//    public void prim(Vertex startVertex){
+//        PriorityQueue<Edge> openList = new PriorityQueue<>(new EdgeComparator());
+//        List<Edge> visitedEdges = new LinkedList<>();
+//        List<Vertex> visitedVertices = new LinkedList<>();
+//        Vertex currentVertex = startVertex;
+//        visitedVertices.add(currentVertex);
+//        List<Edge> edges = getEdges(currentVertex);
+//        for(Edge edge: edges){
+//            if(edge != null){
+//                openList.add(edge);
+//            }
+//        }
+//
+//        while(visitedVertices.size() < vertices.size()){
+//            edges = getEdges(currentVertex);
+//            for(Edge edge: edges){
+//                if(edge != null && !visitedEdges.contains(edge)){
+//                    openList.add(edge);
+//                }
+//            }
+//            Edge edge = openList.poll();
+//            if(!visitedEdges.contains(edge)){
+//                visitedEdges.add(edge);
+//                currentVertex = edge.getTo();
+//                visitedVertices.add(currentVertex);
+//            }
+//        }
+//
+//        System.out.println(visitedEdges);
+//
+//    }
 
 
 
