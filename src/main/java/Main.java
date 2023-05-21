@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args){
         Graph graph = Graph.create(new File("src/matrix.txt"));
 
-        Vertex v = new Vertex("A");
+        Vertex v = new Vertex("B");
         graph.print();
         List<Vertex> neighbors= graph.getNeighbors(v);
 
@@ -16,7 +16,7 @@ public class Main {
 //        graph.traverse(TraversalType.DEPTH_FIRST);
 //        graph.traverse(TraversalType.BREADTH_FIRST);
         //graph.findEulerPath(v);
-        graph.dijkstra(v);
+        graph.prim(v);
     }
 
 }

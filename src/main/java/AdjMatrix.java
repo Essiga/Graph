@@ -206,6 +206,63 @@ public class AdjMatrix extends AdjStruct {
         return result;
     }
 
+//    public void prim(Vertex startVertex){
+//        List<Vertex> unvisitedVertices = new LinkedList<Vertex>(vertices);
+//        HashMap<Vertex, Float> vertexValues = new HashMap<>();
+//        for(Vertex vertex : vertices){
+//            vertexValues.put(vertex, Float.MAX_VALUE);
+//        }
+//        vertexValues.put(startVertex, 0f);
+//
+//        List<Edge> edges = getEdges(startVertex);
+//        for(Edge edge : edges){
+//            if(edge != null){
+//                vertexValues.put(edge.getTo(), edge.getWeight());
+//            }
+//        }
+//
+//        while(unvisitedVertices.size() > 0){
+//            Vertex minimalVertex = getMinimalVertex(vertexValues, unvisitedVertices);
+//            unvisitedVertices.remove(minimalVertex);
+//
+//        }
+//
+//    }
+
+    public void prim(Vertex startVertex){
+        PriorityQueue<Edge> openList = new PriorityQueue<>(new EdgeComparator());
+        List<Edge> visitedEdges = new LinkedList<>();
+        List<Vertex> visitedVertices = new LinkedList<>();
+        Vertex currentVertex = startVertex;
+        visitedVertices.add(currentVertex);
+        List<Edge> edges = getEdges(currentVertex);
+        for(Edge edge: edges){
+            if(edge != null){
+                openList.add(edge);
+            }
+        }
+
+        while(visitedVertices.size() < vertices.size()){
+            edges = getEdges(currentVertex);
+            for(Edge edge: edges){
+                if(edge != null && !visitedEdges.contains(edge)){
+                    openList.add(edge);
+                }
+            }
+            Edge edge = openList.poll();
+            if(!visitedEdges.contains(edge)){
+                visitedEdges.add(edge);
+                currentVertex = edge.getTo();
+                visitedVertices.add(currentVertex);
+            }
+        }
+
+        System.out.println(visitedEdges);
+
+    }
+
+
+
 //    //niedrigste kante finden und danach einen der knoten auswählen und dijkstra machen
 //    public void prim(Vertex currentVertex){
 //        HashMap<Edge, Float> edgeValues = new HashMap<>();

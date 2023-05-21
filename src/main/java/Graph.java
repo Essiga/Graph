@@ -61,6 +61,7 @@ public class Graph {
     public void kruskal() {
         adjStruct.kruskal();
     }
+    public void prim(Vertex startVertex){adjStruct.prim(startVertex);}
 }
 
 
